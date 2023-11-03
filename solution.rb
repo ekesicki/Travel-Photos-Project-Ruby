@@ -14,14 +14,13 @@
 #   - New: <city><number>.<extension>
 
 class Picture
-    attr_accessor :name, :extension, :city, :date_time, :order, :digits, :number
+    attr_accessor :name, :extension, :city, :date_time, :digits, :number
 
-    def initialize (name, extension, city, date_time, order)
+    def initialize (name, extension, city, date_time)
         @name = name
         @extension = extension
         @city = city
         @date_time = date_time
-        @order = order
     end
 
     def print_picture
@@ -32,7 +31,6 @@ class Picture
         puts "Date_Time: #{@date_time}"
         puts "   Digits: #{@digits}"
         puts "   Number: #{@number}"
-        puts "    Order: #{@order}"
         puts
     end
     
@@ -48,21 +46,19 @@ def string_to_time (date_str, time_str)
     time_obj = Time.new(*date_time_arr)
 end
 
-def create_picture(str, order)
+def create_picture(str)
     pic = str.split(/(?:,\s|\s|\.)/) # regex meaning split on either ", ", " ", or "."
 
-    picture = Picture.new(pic[0], pic[1], pic[2], string_to_time(pic[3], pic[4]), order)
+    picture = Picture.new(pic[0], pic[1], pic[2], string_to_time(pic[3], pic[4]))
 end
 
 def create_picture_array (str)
     picture_array = []
-    order = 1
     string_array = str.split("\n")
 
     for line in string_array
-        new_picture = create_picture(line, order)
+        new_picture = create_picture(line)
         picture_array.push(new_picture)
-        order = order+1
     end
     picture_array
 end
@@ -76,8 +72,12 @@ end
 def assign_digits_to_cities (picture_array)
     city_array = create_city_array(picture_array)
 
-    city_numbers = city_array.map {|c| picture_array.count {|p| p.city == c} } # for each city, count how many pictures we have from there
-    city_digits = city_numbers.map {|n| (Math.log10(n) + 1).floor } # Math equation for finding the digits in a number
+    # for each city, count how many pictures we have from there
+    city_numbers = city_array.map {|c| picture_array.count {|p| p.city == c} }
+
+    # Math equation for finding the digits in a number
+    city_digits = city_numbers.map {|n| (Math.log10(n) + 1).floor }
+
     city_array = city_array.zip(city_digits)
     city_hash = Hash[city_array]
 end
@@ -94,7 +94,9 @@ def assign_numbers_to_city (city_pics)
     count = 1
     
     for pic in city_pics
-        padding = digits - (Math.log10(count) + 1).floor # max digits - count digits = how many digits of padding to add
+        # max digits - count digits = how many digits of padding to add
+        padding = digits - (Math.log10(count) + 1).floor
+        
         number = count.to_s
         for p in (1..padding)
             number.insert(0, '0')
