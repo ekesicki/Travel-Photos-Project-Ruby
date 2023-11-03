@@ -21,19 +21,7 @@ class Picture
         @extension = extension
         @city = city
         @date_time = date_time
-    end
-
-    def print_picture
-        puts "Picture:"
-        puts "     Name: #{@name}"
-        puts "Extension: #{@extension}"
-        puts "     City: #{@city}"
-        puts "Date_Time: #{@date_time}"
-        puts "   Digits: #{@digits}"
-        puts "   Number: #{@number}"
-        puts
-    end
-    
+    end  
 end
 
 def string_to_time (date_str, time_str)
@@ -96,7 +84,7 @@ def assign_numbers_to_city (city_pics)
     for pic in city_pics
         # max digits - count digits = how many digits of padding to add
         padding = digits - (Math.log10(count) + 1).floor
-        
+
         number = count.to_s
         for p in (1..padding)
             number.insert(0, '0')
